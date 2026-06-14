@@ -6,6 +6,11 @@ export default function PersonalNewsApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Create a dynamic configuration for your API endpoint
+  const BACKEND_URL =
+    process.env.REACT_APP_BACKEND_URL ||
+    "[https://kenya-news.onrender.com](https://kenya-news.onrender.com)";
+
   useEffect(() => {
     const fetchNews = async () => {
       setLoading(true);
@@ -13,8 +18,9 @@ export default function PersonalNewsApp() {
       try {
         // Points safely to your local Node engine proxy
         const response = await fetch(
-          `http://localhost:5000/api/news?category=${activeTab}`,
+          `${BACKEND_URL}/api/news?category=${activeTab}`,
         );
+
         if (!response.ok)
           throw new Error("Failed to pull news feeds from server.");
 
