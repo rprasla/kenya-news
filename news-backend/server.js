@@ -3,7 +3,15 @@ const cors = require("cors");
 const Parser = require("rss-parser");
 
 const app = express();
-app.use(cors()); // Permits your React app to speak to this backend safely
+
+// Replace your old app.use(cors()) with this line:
+app.use(
+  cors({
+    origin: "*", // Allows your Vercel frontend web address to fetch data securely
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"],
+  }),
+);
 
 const parser = new Parser({
   // Custom headers mimic a real browser request so news sites don't block you
@@ -43,7 +51,7 @@ const FEED_CONFIG = {
       url: "https://www.independent.co.ug/feed/",
     },
   ],
-};  
+};
 
 app.get("/api/news", async (req, res) => {
   const { category } = req.query;
