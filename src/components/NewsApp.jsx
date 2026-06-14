@@ -8,8 +8,7 @@ export default function PersonalNewsApp() {
 
   // Create a dynamic configuration for your API endpoint
   const BACKEND_URL =
-    process.env.REACT_APP_BACKEND_URL ||
-    "[https://kenya-news.onrender.com](https://kenya-news.onrender.com)";
+    process.env.REACT_APP_BACKEND_URL || "https://kenya-news.onrender.com";
 
   useEffect(() => {
     const fetchNews = async () => {
