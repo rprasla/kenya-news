@@ -34,7 +34,7 @@ export default function PersonalNewsApp() {
         setArticles(data);
       } catch (err) {
         setError(err.message);
-      } finaly {
+      } finally {
         setLoading(false);
       }
     };
