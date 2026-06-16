@@ -16,162 +16,151 @@ const FEED_CONFIG = {
   nairobi: {
     all: [
       {
-        name: "Kenyans.co.ke Premium",
-        url: "https://www.kenyans.co.ke/feeds/news",
-      },
-      {
-        name: "Capital FM Nairobi",
-        url: "https://www.capitalfm.co.ke/news/feed/",
+        name: "Nairobi Metro News",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+nairobi&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "Kenyans.co.ke Politics",
-        url: "https://www.kenyans.co.ke/feeds/politics",
-      },
-      {
-        name: "Capital FM Politics",
-        url: "https://www.capitalfm.co.ke/news/category/news/politics/feed/",
+        name: "Nairobi Politics",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+politics&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     business: [
       {
-        name: "Kenyans.co.ke Business",
-        url: "https://www.kenyans.co.ke/feeds/business",
-      },
-      {
-        name: "Capital FM Business",
-        url: "https://www.capitalfm.co.ke/news/category/business/feed/",
+        name: "Nairobi Business",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+business+OR+shilling&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
       {
-        name: "Capital Sports",
-        url: "https://www.capitalfm.co.ke/news/category/sports/feed/",
+        name: "Nairobi Sports",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+sports&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     entertainment: [
       {
-        name: "Kenyans.co.ke Lifestyle",
-        url: "https://www.kenyans.co.ke/feeds/lifestyle",
-      },
-      {
-        name: "Capital FM Lifestyle",
-        url: "https://www.capitalfm.co.ke/news/category/lifestyle/feed/",
+        name: "Nairobi Entertainment",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+entertainment+OR+lifestyle&hl=en-US&gl=US&ceid=US:en",
       },
     ],
   },
   kenya: {
     all: [
       {
-        name: "Kenyans.co.ke National",
-        url: "https://www.kenyans.co.ke/feeds/news",
-      },
-      {
-        name: "The Guardian (Kenya)",
-        url: "https://www.theguardian.com/world/kenya/rss",
+        name: "Kenya National News",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "Kenyans.co.ke Politics",
-        url: "https://www.kenyans.co.ke/feeds/politics",
+        name: "Kenya Politics",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+politics+OR+ruto+OR+odinga&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     business: [
       {
-        name: "Kenyans.co.ke Business",
-        url: "https://www.kenyans.co.ke/feeds/business",
+        name: "Kenya Business",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+business+OR+economy+OR+tax&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
       {
-        name: "Kenyans.co.ke Sports",
-        url: "https://www.kenyans.co.ke/feeds/sports",
+        name: "Kenya Sports",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+sports+OR+football+OR+athletics&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     entertainment: [
       {
-        name: "Kenyans.co.ke Entertainment",
-        url: "https://www.kenyans.co.ke/feeds/entertainment",
+        name: "Kenya Entertainment",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+entertainment+OR+celebrity&hl=en-US&gl=US&ceid=US:en",
       },
     ],
   },
   tanzania: {
     all: [
       {
-        name: "AllAfrica Tanzania",
-        url: "https://allafrica.com/tools/headlines/rdf/tanzania/headlines.rdf",
+        name: "Google News Tanzania",
+        url: "https://news.google.com/rss/search?q=tanzania&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "AllAfrica TZ Governance",
-        url: "https://allafrica.com/tools/headlines/rdf/tanzania/headlines.rdf",
+        name: "Tanzania Politics",
+        url: "https://news.google.com/rss/search?q=tanzania+politics+government&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     business: [
       {
-        name: "Daily News TZ Business",
-        url: "https://dailynews.co.tz/category/business/feed/",
+        name: "Tanzania Business",
+        url: "https://news.google.com/rss/search?q=tanzania+business+economy&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
       {
-        name: "Daily News TZ Sports",
-        url: "https://dailynews.co.tz/category/sport/feed/",
+        name: "Tanzania Sports",
+        url: "https://news.google.com/rss/search?q=tanzania+sports&hl=en-US&gl=US&ceid=US:en",
       },
     ],
-    entertainment: [],
+    entertainment: [
+      {
+        name: "Tanzania Lifestyle",
+        url: "https://news.google.com/rss/search?q=tanzania+entertainment&hl=en-US&gl=US&ceid=US:en",
+      },
+    ],
   },
   uganda: {
-    // Utilizing precise Google News premium parameter indexing for Uganda sub-topics
     all: [
       {
         name: "Google News Uganda",
-        url: "https://news.google.com/rss/search?q=uganda+politics+or+business&hl=en-US&gl=US&ceid=US:en",
+        url: "https://news.google.com/rss/search?q=uganda&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "Premium Uganda Politics",
+        name: "Uganda Politics",
         url: "https://news.google.com/rss/search?q=uganda+politics+government&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     business: [
       {
-        name: "Premium Uganda Economy",
-        url: "https://news.google.com/rss/search?q=uganda+business+economy+market&hl=en-US&gl=US&ceid=US:en",
+        name: "Uganda Business",
+        url: "https://news.google.com/rss/search?q=uganda+business+economy&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
       {
-        name: "Premium Uganda Sports",
-        url: "https://news.google.com/rss/search?q=uganda+sports+football&hl=en-US&gl=US&ceid=US:en",
+        name: "Uganda Sports",
+        url: "https://news.google.com/rss/search?q=uganda+sports&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     entertainment: [
       {
-        name: "Premium Uganda Culture",
-        url: "https://news.google.com/rss/search?q=uganda+entertainment+culture&hl=en-US&gl=US&ceid=US:en",
+        name: "Uganda Culture",
+        url: "https://news.google.com/rss/search?q=uganda+entertainment&hl=en-US&gl=US&ceid=US:en",
       },
     ],
   },
 };
 
 app.get("/api/news", async (req, res) => {
-  const { category, topic } = req.query; // category = country/city, topic = sub-category
+  const { category, topic } = req.query;
 
-  const regionConfig = FEED_CONFIG[category || "kenya"];
-  if (!regionConfig)
+  // Fallback defaults to keep the app functional
+  const activeCategory = category || "kenya";
+  const activeTopic = topic || "all";
+
+  const regionConfig = FEED_CONFIG[activeCategory];
+  if (!regionConfig) {
     return res
       .status(400)
       .json({ error: "Invalid country or city parameter." });
+  }
 
-  // Select feeds for the specified topic; fall back to 'all' if empty
+  // Pick the target array based on the requested tab
   const feeds =
-    regionConfig[topic] && regionConfig[topic].length > 0
-      ? regionConfig[topic]
+    regionConfig[activeTopic] && regionConfig[activeTopic].length > 0
+      ? regionConfig[activeTopic]
       : regionConfig["all"];
 
   let combinedArticles = [];
@@ -182,7 +171,7 @@ app.get("/api/news", async (req, res) => {
       if (feedData && feedData.items) {
         const parsedItems = feedData.items.map((item) => ({
           id: item.link || item.guid || Math.random().toString(),
-          title: item.title || "Untitled Story",
+          title: item.title ? item.title.split(" - ")[0] : "Breaking News", // Strips trailing publication name strings
           link: item.link || "#",
           source: feed.name,
           date: item.pubDate
@@ -190,50 +179,33 @@ app.get("/api/news", async (req, res) => {
             : "Recent",
           snippet: item.contentSnippet
             ? item.contentSnippet.substring(0, 150) + "..."
-            : "Click link to read full story.",
+            : "",
         }));
         combinedArticles = [...combinedArticles, ...parsedItems];
       }
     } catch (err) {
-      console.error(`Skipped ${feed.name}:`, err.message);
+      console.error(`Fetch error on ${feed.name}:`, err.message);
     }
   }
 
-  // --- PREMIUM QUALITY QUALITY CONTENT FILTER ---
-  const LOW_QUALITY_KEYWORDS = [
-    "sponsored",
-    "advertorial",
-    "win a prize",
-    "shocking video",
-    "you won't believe",
-    "click here",
-    "casino",
-    "betting",
-    "promo",
-  ];
+  // Basic filtering for length and relevance
+  combinedArticles = combinedArticles.filter(
+    (article) => article.title.split(" ").length >= 3,
+  );
 
-  combinedArticles = combinedArticles.filter((article) => {
-    const titleLower = article.title.toLowerCase();
-    const snippetLower = article.snippet.toLowerCase();
-
-    const isSpam = LOW_QUALITY_KEYWORDS.some(
-      (keyword) =>
-        titleLower.includes(keyword) || snippetLower.includes(keyword),
-    );
-    const isTooShort = article.title.split(" ").length < 3;
-
-    return !isSpam && !isTooShort;
-  });
-
-  // Sort articles chronologically (newest first)
-  if (combinedArticles.length > 0) {
-    combinedArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Fallback logic to prevent a blank UI screen
+  if (combinedArticles.length === 0) {
+    return res.json([
+      {
+        id: "fallback-1",
+        title: `Updating ${activeTopic} feed...`,
+        link: "#",
+        source: "System",
+        date: "Now",
+        snippet: "Live items are updating. Switch tabs or refresh in a moment.",
+      },
+    ]);
   }
 
   res.json(combinedArticles);
 });
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 Production Quality Filter active on port ${PORT}`),
-);
