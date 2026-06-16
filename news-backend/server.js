@@ -209,3 +209,8 @@ app.get("/api/news", async (req, res) => {
 
   res.json(combinedArticles);
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 Production Quality Filter active on port ${PORT}`),
+);
