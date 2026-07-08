@@ -20,18 +20,21 @@ export default function PersonalNewsApp() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCategorizedNews = async () => {
+    const fetchNews = async () => {
       setLoading(true);
       setError(null);
       try {
-        // Query both regional filters and topic variables simultaneously
         const response = await fetch(
           `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}`,
         );
-        if (!response.ok)
-          throw new Error("Could not pull specified category feeds.");
-
+        if (!response.ok) throw new Error("Failed to load feeds.");
         const data = await response.json();
+
+        // FORCE CHRONOLOGICAL TIMELINE RENDER (Newest First)
+        if (Array.isArray(data) && data.length > 0) {
+          data.sort((a, b) => b.timestamp - a.timestamp);
+        }
+
         setArticles(data);
       } catch (err) {
         setError(err.message);
@@ -39,9 +42,8 @@ export default function PersonalNewsApp() {
         setLoading(false);
       }
     };
-
-    fetchCategorizedNews();
-  }, [activeRegion, activeTopic]); // Re-run if user switches country OR topic
+    fetchNews();
+  }, [activeRegion, activeTopic]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
