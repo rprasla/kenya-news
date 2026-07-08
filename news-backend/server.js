@@ -184,14 +184,15 @@ app.get("/api/news", async (req, res) => {
             ? item.title.split(" - ")[0]
             : "Live Update";
 
-          // 1. SAFE UNIX TIMESTAMP CONVERSION:
-          // Try parsing the date; if it fails or doesn't exist, fallback safely to right now
-          let articleTimestamp = Date.now();
+          // 1. Create a rock-solid date fallback chain
+          let finalTimestamp = Date.now();
+
           if (item.pubDate) {
-            const parsedTime = Date.parse(item.pubDate);
-            if (!isNaN(parsedTime)) {
-              articleTimestamp = parsedTime; // Numeric millisecond stamp (e.g., 1783516000000)
-            }
+            const parsed = Date.parse(item.pubDate);
+            if (!isNaN(parsed)) finalTimestamp = parsed;
+          } else if (item.isoDate) {
+            const parsed = Date.parse(item.isoDate);
+            if (!isNaN(parsed)) finalTimestamp = parsed;
           }
 
           return {
@@ -199,19 +200,25 @@ app.get("/api/news", async (req, res) => {
             title: cleanTitle,
             link: item.link || "#",
             source: feed.name,
-            timestamp: articleTimestamp, // Hidden strict sorting integer
+            snippet: item.contentSnippet
+              ? item.contentSnippet.substring(0, 140) + "..."
+              : "",
+
+            // 2. We bind it to every possible naming scheme to prevent frontend mismatches:
+            timestamp: Number(finalTimestamp),
+            timeValue: Number(finalTimestamp),
+            rawDate: Number(finalTimestamp),
+
             date:
-              new Date(articleTimestamp).toLocaleTimeString([], {
+              new Date(finalTimestamp).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               }) +
               " - " +
-              new Date(articleTimestamp).toLocaleDateString(),
-            snippet: item.contentSnippet
-              ? item.contentSnippet.substring(0, 140) + "..."
-              : "",
+              new Date(finalTimestamp).toLocaleDateString(),
           };
         });
+
         combinedArticles = [...combinedArticles, ...parsedItems];
       }
     } catch (err) {

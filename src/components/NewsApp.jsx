@@ -106,27 +106,29 @@ export default function PersonalNewsApp() {
 
         {!loading && !error && (
           <div className="space-y-4">
-            {articles.map((article) => (
-              <div
-                key={article.id}
-                className="p-4 bg-white rounded-xl shadow-sm border border-slate-100"
-              >
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span className="font-bold text-amber-600 uppercase tracking-wide">
-                    {article.source}
-                  </span>
-                  <span>{article.date}</span>
-                </div>
-                <h3 className="font-bold text-base text-slate-900 hover:text-amber-600 leading-snug">
-                  <a href={article.link} target="_blank" rel="noreferrer">
-                    {article.title}
-                  </a>
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                  {article.snippet}
-                </p>
-              </div>
-            ))}
+            {/* Find your articles mapping list and wrap it exactly like this */}
+
+            {articles &&
+              articles
+                .filter((article) => article && article.title) // clear out null objects
+                .sort((a, b) => {
+                  // Pull whichever timestamp property exists safely
+                  const timeA = a.timestamp || a.timeValue || a.rawDate || 0;
+                  const timeB = b.timestamp || b.timeValue || b.rawDate || 0;
+                  return timeB - timeA; // Strict highest-number-first sorting
+                })
+                .map((article) => (
+                  <div key={article.id} className="news-card">
+                    <h3>{article.title}</h3>
+                    <span className="meta-tag">
+                      {article.source} • {article.date}
+                    </span>
+                    <p>{article.snippet}</p>
+                    <a href={article.link} target="_blank" rel="noreferrer">
+                      Read more
+                    </a>
+                  </div>
+                ))}
           </div>
         )}
       </main>
