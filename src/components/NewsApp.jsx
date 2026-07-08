@@ -1,149 +1,173 @@
-import React, { useState, useEffect, useCallback } from "react";
-import "./NewsApp.css"; // Styling file configuration link
+import React, { useState, useEffect } from "react";
 
-// Replace this with your exact active Render backend API root link
-const BACKEND_URL = "https://your-render-backend-url.onrender.com";
+const BACKEND_URL =
+  process.env.REACT_APP_BACKEND_URL || "https://kenya-news.onrender.com";
 
-export default function NewsApp() {
-  // Navigation Routing States
-  const [activeRegion, setActiveRegion] = useState("kenya"); // options: kenya, nairobi, uganda, tanzania
-  const [activeTopic, setActiveTopic] = useState("all"); // options: all, politics, business, sports, entertainment
+const REGIONS = ["nairobi", "kenya", "tanzania", "uganda"];
+const TOPICS = [
+  { id: "all", label: "📰 All News" },
+  { id: "politics", label: "⚖️ Politics" },
+  { id: "business", label: "📈 Business" },
+  { id: "sports", label: "⚽ Sports" },
+  { id: "entertainment", label: "🍿 Entertainment" },
+];
 
+export default function PersonalNewsApp() {
+  const [activeRegion, setActiveRegion] = useState("kenya");
+  const [activeTopic, setActiveTopic] = useState("all");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  // MASTER FETCHING ENGINE (NO SORTING IMPLEMENTED)
-  const syncLiveNews = useCallback(
-    async (isPullToRefresh = false) => {
-      if (isPullToRefresh) setRefreshing(true);
-      else setLoading(true);
-      setError(null);
+  useEffect(() => {
+    let isMounted = true;
 
+    const fetchNews = async () => {
+      setLoading(true);
       try {
-        // Create a timestamp parameters buster to break past Vercel Edge proxy caching
-        const cacheBuster = `&_cb=${Date.now()}`;
-        const apiEndpoint = `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}${cacheBuster}`;
-
-        const response = await fetch(apiEndpoint);
-        if (!response.ok)
-          throw new Error("Synchronization handshake aborted by host.");
-
+        // Append a cache-buster parameter to smash past Vercel's Edge server memory saving
+        const response = await fetch(
+          `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}&_cb=${Date.now()}`,
+        );
+        if (!response.ok) throw new Error("Failed to pull raw feeds.");
         const data = await response.json();
 
-        if (Array.isArray(data)) {
-          // 🚫 NO SORTING APPLIED:
-          // Data is passed directly into state exactly as structured by your server configuration.
-          setArticles(data);
+        if (isMounted && Array.isArray(data)) {
+          // 🛠️ UNIVERSAL STRING-TO-DATE CONVERTER SORTING ENGINE
+          const correctlyOrderedNews = [...data].sort((a, b) => {
+            // Helper function to turn strings like "11:45 AM - 7/8/2026" back into numeric milliseconds
+            const getNumericMs = (articleObj) => {
+              if (!articleObj) return 0;
+
+              // If the backend already sends a valid timestamp property, use it immediately
+              if (articleObj.timestamp && !isNaN(articleObj.timestamp))
+                return Number(articleObj.timestamp);
+              if (articleObj.timeValue && !isNaN(articleObj.timeValue))
+                return Number(articleObj.timeValue);
+
+              // If it only sends the string, parse it manually:
+              if (articleObj.date && typeof articleObj.date === "string") {
+                // Splits "11:45 AM - 7/8/2026" into ["11:45 AM", "7/8/2026"]
+                const dateParts = articleObj.date.split(" - ");
+                if (dateParts.length === 2) {
+                  const timeString = dateParts[0].trim(); // "11:45 AM"
+                  const dayString = dateParts[1].trim(); // "7/8/2026"
+
+                  const combinedParsedMs = Date.parse(
+                    `${dayString} ${timeString}`,
+                  );
+                  if (!isNaN(combinedParsedMs)) return combinedParsedMs;
+                }
+
+                // Fallback parse attempt for single raw date string objects
+                const genericParsedMs = Date.parse(articleObj.date);
+                if (!isNaN(genericParsedMs)) return genericParsedMs;
+              }
+
+              return 0; // Absolute fallback for entries with corrupted indices
+            };
+
+            // Subtract absolute milliseconds (Highest value/Newest timestamp moves to index 0)
+            return getNumericMs(b) - getNumericMs(a);
+          });
+
+          setArticles(correctlyOrderedNews);
         }
       } catch (err) {
-        console.error("Pipeline Communication Error Handled:", err.message);
-        setError(err.message);
+        console.error("Layout chronological sorting failure:", err.message);
       } finally {
-        setLoading(false);
-        setRefreshing(false);
+        if (isMounted) setLoading(false);
       }
-    },
-    [activeRegion, activeTopic],
-  );
+    };
 
-  // Hook: Trigger automatic refresh loops whenever the navigation tab shifts
-  useEffect(() => {
-    syncLiveNews();
-  }, [syncLiveNews]);
+    fetchNews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeRegion, activeTopic]);
 
   return (
-    <div className="newsapp-root">
-      <header className="newsapp-header">
-        <h1>East Africa Newsroom</h1>
-
-        {/* REGIONAL FILTER ACTIONS */}
-        <div className="filter-row regions">
-          {["kenya", "nairobi", "uganda", "tanzania"].map((region) => (
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      {/* Primary Top Bar: Countries */}
+      <header className="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+          <h1 className="text-lg font-bold">🌍 East Africa Custom Brief</h1>
+        </div>
+        <nav className="max-w-3xl mx-auto px-4 flex gap-1 pb-1 overflow-x-auto">
+          {REGIONS.map((region) => (
             <button
               key={region}
-              className={`filter-btn ${activeRegion === region ? "selected" : ""}`}
               onClick={() => {
                 setActiveRegion(region);
                 setActiveTopic("all");
-              }}
+              }} // Reset topic on region switch
+              className={`px-4 py-2 text-xs font-bold uppercase rounded-t-lg tracking-wider transition-all ${
+                activeRegion === region
+                  ? "bg-amber-500 text-slate-950"
+                  : "text-slate-300 hover:bg-slate-800"
+              }`}
             >
-              {region.toUpperCase()}
+              {region}
+            </button>
+          ))}
+        </nav>
+      </header>
+
+      {/* Secondary Navbar: Category Sub-Row */}
+      <div className="bg-white border-b border-slate-200 sticky top-[88px] z-10 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none">
+          {TOPICS.map((topic) => (
+            <button
+              key={topic.id}
+              onClick={() => setActiveTopic(topic.id)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
+                activeTopic === topic.id
+                  ? "bg-slate-800 border-slate-800 text-white"
+                  : "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {topic.label}
             </button>
           ))}
         </div>
-
-        {/* TOPICAL FEED FILTER ACTIONS */}
-        <div className="filter-row topics">
-          {["all", "politics", "business", "sports", "entertainment"].map(
-            (topic) => (
-              <button
-                key={topic}
-                className={`topic-btn ${activeTopic === topic ? "selected" : ""}`}
-                onClick={() => setActiveTopic(topic)}
-              >
-                {topic.charAt(0).toUpperCase() + topic.slice(1)}
-              </button>
-            ),
-          )}
-        </div>
-      </header>
-
-      {/* PULL TO REFRESH INTERACTIVE ACTION ANCHOR */}
-      <div className="sync-action-container">
-        <button
-          onClick={() => syncLiveNews(true)}
-          className={`sync-trigger ${refreshing ? "syncing" : ""}`}
-          disabled={loading || refreshing}
-        >
-          {refreshing
-            ? "🔄 Fetching Feed Updates..."
-            : "👇 Pull/Click to Sync Headlines"}
-        </button>
       </div>
 
-      <main className="feed-viewport">
-        {/* STRUCTURAL SKELETON LOADERS */}
-        {loading && !refreshing && (
-          <div className="viewport-grid layout-shimmer">
-            {[1, 2, 3].map((placeholderKey) => (
-              <div key={placeholderKey} className="shimmer-card-wireframe" />
-            ))}
-          </div>
+      {/* Feed Layout */}
+      <main className="max-w-3xl mx-auto px-4 py-6">
+        {loading && (
+          <p className="text-center text-sm py-10 text-slate-400">
+            Filtering specific archives...
+          </p>
         )}
-
-        {/* RECOVERY EXCEPTION BANNER */}
         {error && (
-          <div className="error-diagnostic-panel">
-            <h3>Network Outage Detected</h3>
-            <p>{error}</p>
-            <button onClick={() => syncLiveNews()}>
-              Retry Connection Handshake
-            </button>
+          <div className="p-4 bg-red-50 text-red-700 text-sm rounded-md">
+            ⚠️ {error}
           </div>
         )}
 
-        {/* CORE STREAM INTERFACE */}
         {!loading && !error && (
-          <div className="viewport-grid">
+          <div className="space-y-4">
             {articles.map((article) => (
-              <article key={article.id} className="interactive-news-card">
-                <div className="card-top-metadata">
-                  <span className="pill-tag-source">{article.source}</span>
-                  <span className="text-tag-date">{article.date}</span>
+              <div
+                key={article.id}
+                className="p-4 bg-white rounded-xl shadow-sm border border-slate-100"
+              >
+                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span className="font-bold text-amber-600 uppercase tracking-wide">
+                    {article.source}
+                  </span>
+                  <span>{article.date}</span>
                 </div>
-                <h3 className="headline-title-text">{article.title}</h3>
-                <p className="body-summary-snippet">{article.snippet}</p>
-                <a
-                  href={article.link}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="card-navigation-link"
-                >
-                  Read Full Coverage →
-                </a>
-              </article>
+                <h3 className="font-bold text-base text-slate-900 hover:text-amber-600 leading-snug">
+                  <a href={article.link} target="_blank" rel="noreferrer">
+                    {article.title}
+                  </a>
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                  {article.snippet}
+                </p>
+              </div>
             ))}
           </div>
         )}
