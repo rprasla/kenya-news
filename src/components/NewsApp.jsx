@@ -22,37 +22,40 @@ export default function PersonalNewsApp() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchNewsFeed = useCallback(async (isPullToRefresh = false) => {
-    if (isPullToRefresh) setRefreshing(true);
-    else setLoading(true);
-    setError(null);
+  const fetchNewsFeed = useCallback(
+    async (isPullToRefresh = false) => {
+      if (isPullToRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError(null);
 
-    try {
-      // Append a cache-buster timestamp parameter to break past Vercel edge caching
-      const cacheBuster = `&_cb=${Date.now()}`;
-      const requestUrl = `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}${cacheBuster}`;
-      
-      const response = await fetch(requestUrl);
-      if (!response.ok) throw new Error("Could not sync live media records.");
-      const data = await response.json();
+      try {
+        // Append a cache-buster timestamp parameter to break past Vercel edge caching
+        const cacheBuster = `&_cb=${Date.now()}`;
+        const requestUrl = `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}${cacheBuster}`;
 
-      if (Array.isArray(data)) {
-        // ENFORCE CHRONOLOGICAL ALIGNMENT (Newest Unix millisecond values at index 0)
-        const strictlySorted = [...data].sort((a, b) => {
-          const valA = Number(a.timestamp || a.timeValue || a.rawDate || 0);
-          const valB = Number(b.timestamp || b.timeValue || b.rawDate || 0);
-          return valB - valA;
-        });
-        setArticles(strictlySorted);
+        const response = await fetch(requestUrl);
+        if (!response.ok) throw new Error("Could not sync live media records.");
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          // ENFORCE CHRONOLOGICAL ALIGNMENT (Newest Unix millisecond values at index 0)
+          const strictlySorted = [...data].sort((a, b) => {
+            const valA = Number(a.timestamp || a.timeValue || a.rawDate || 0);
+            const valB = Number(b.timestamp || b.timeValue || b.rawDate || 0);
+            return valB - valA;
+          });
+          setArticles(strictlySorted);
+        }
+      } catch (err) {
+        console.error("Fetch Exception Handled:", err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-    } catch (err) {
-      console.error("Fetch Exception Handled:", err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [activeRegion, activeTopic]);
+    },
+    [activeRegion, activeTopic],
+  );
 
   // Hook: Trigger feed updates automatically when standard tabs change
   useEffect(() => {
@@ -63,14 +66,17 @@ export default function PersonalNewsApp() {
     <div className="app-container">
       <header className="app-header">
         <h1>East Africa Newsroom</h1>
-        
+
         {/* REGION NAVIGATION SELECTOR ROW */}
         <div className="nav-row regions">
-          {['kenya', 'nairobi', 'uganda', 'tanzania'].map((region) => (
-            <button 
+          {["kenya", "nairobi", "uganda", "tanzania"].map((region) => (
+            <button
               key={region}
-              className={`nav-btn ${activeRegion === region ? 'active' : ''}`}
-              onClick={() => { setActiveRegion(region); setActiveTopic('all'); }}
+              className={`nav-btn ${activeRegion === region ? "active" : ""}`}
+              onClick={() => {
+                setActiveRegion(region);
+                setActiveTopic("all");
+              }}
             >
               {region.toUpperCase()}
             </button>
@@ -79,26 +85,30 @@ export default function PersonalNewsApp() {
 
         {/* TOPIC/CATEGORY SUB-SELECTOR ROW */}
         <div className="nav-row topics">
-          {['all', 'politics', 'business', 'sports', 'entertainment'].map((topic) => (
-            <button 
-              key={topic}
-              className={`topic-btn ${activeTopic === topic ? 'active' : ''}`}
-              onClick={() => setActiveTopic(topic)}
-            >
-              {topic.charAt(0).toUpperCase() + topic.slice(1)}
-            </button>
-          ))}
+          {["all", "politics", "business", "sports", "entertainment"].map(
+            (topic) => (
+              <button
+                key={topic}
+                className={`topic-btn ${activeTopic === topic ? "active" : ""}`}
+                onClick={() => setActiveTopic(topic)}
+              >
+                {topic.charAt(0).toUpperCase() + topic.slice(1)}
+              </button>
+            ),
+          )}
         </div>
       </header>
 
       {/* PULL TO REFRESH INTERACTION ELEMENT */}
       <div className="action-row">
-        <button 
-          onClick={() => fetchNewsFeed(true)} 
-          className={`pull-refresh-action ${refreshing ? 'loading' : ''}`}
+        <button
+          onClick={() => fetchNewsFeed(true)}
+          className={`pull-refresh-action ${refreshing ? "loading" : ""}`}
           disabled={loading || refreshing}
         >
-          {refreshing ? '⏳ Refreshing Live Feeds...' : '👇 Click to Sync Fresh News'}
+          {refreshing
+            ? "⏳ Refreshing Live Feeds..."
+            : "👇 Click to Sync Fresh News"}
         </button>
       </div>
 
@@ -106,7 +116,9 @@ export default function PersonalNewsApp() {
         {/* SHIMMERING CARD SKELETON PLACEHOLDERS */}
         {loading && !refreshing && (
           <div className="news-grid animated-shimmer">
-            {[1, 2, 3, 4].map((n) => <div key={n} className="skeleton-card-block" />)}
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="skeleton-card-block" />
+            ))}
           </div>
         )}
 
@@ -130,10 +142,10 @@ export default function PersonalNewsApp() {
                 </div>
                 <h3 className="article-headline">{article.title}</h3>
                 <p className="article-summary">{article.snippet}</p>
-                <a 
-                  href={article.link} 
-                  target="_blank" 
-                  rel="noreferrer noopener" 
+                <a
+                  href={article.link}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   className="read-more-action"
                 >
                   Read Full Coverage →
@@ -145,5 +157,4 @@ export default function PersonalNewsApp() {
       </main>
     </div>
   );
-}
 }
