@@ -15,59 +15,43 @@ const parser = new Parser({
 const FEED_CONFIG = {
   nairobi: {
     all: [
-      {
-        name: "KBC Nairobi News",
-        url: "https://www.kbc.co.ke/category/county-news/nairobi/feed/",
-      },
-      {
-        name: "Kenyans City Streams",
-        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+Nairobi&hl=en-US&gl=US&ceid=US:en",
-      },
+      { name: "Nairobi Wire Breaking", url: "https://nairobiwire.com/feed" },
+      { name: "K24 Metro Streams", url: "https://k24.digital/feed" },
     ],
     politics: [
       {
-        name: "KBC Politics Channel",
-        url: "https://www.kbc.co.ke/category/news/politics/feed/",
+        name: "Nairobi Wire Politics",
+        url: "https://nairobiwire.com/category/news/politics/feed",
       },
     ],
     business: [
       {
-        name: "KBC Business Tech",
-        url: "https://www.kbc.co.ke/category/business/feed/",
+        name: "K24 Business Core",
+        url: "https://k24.digital/category/business/feed",
       },
     ],
     sports: [
       {
-        name: "KBC Sports Central",
-        url: "https://www.kbc.co.ke/category/sports/feed/",
+        name: "Nairobi Wire Sports",
+        url: "https://nairobiwire.com/category/sports/feed",
       },
     ],
     entertainment: [
-      {
-        name: "KBC Lifestyle Show",
-        url: "https://www.kbc.co.ke/category/entertainment/feed/",
-      },
+      { name: "Ghafla Entertainment", url: "https://ghafla.co.ke/ke/feed" },
     ],
   },
   kenya: {
     all: [
-      {
-        name: "KBC National Live",
-        url: "https://www.kbc.co.ke/category/news/kenya/feed/",
-      },
-      { name: "Kenya News Agency Daily", url: "https://kenyanews.go.ke/feed/" },
+      { name: "K24 National Headlines", url: "https://k24.digital/feed" },
+      { name: "Nairobi Wire National", url: "https://nairobiwire.com/feed" },
     ],
     politics: [
       {
-        name: "KBC National Politics",
-        url: "https://www.kbc.co.ke/category/news/politics/feed/",
+        name: "K24 Statehouse Briefs",
+        url: "https://k24.digital/category/news/politics/feed",
       },
     ],
     business: [
-      {
-        name: "KBC Financial Wire",
-        url: "https://www.kbc.co.ke/category/business/feed/",
-      },
       {
         name: "Business Daily Core",
         url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
@@ -75,17 +59,15 @@ const FEED_CONFIG = {
     ],
     sports: [
       {
-        name: "KBC National Sports",
-        url: "https://www.kbc.co.ke/category/sports/feed/",
+        name: "K24 Sports Desk",
+        url: "https://k24.digital/category/sports/feed",
       },
     ],
     entertainment: [
-      {
-        name: "KBC Showbiz",
-        url: "https://www.kbc.co.ke/category/entertainment/feed/",
-      },
+      { name: "Ghafla Kenya Showbiz", url: "https://ghafla.co.ke/ke/feed" },
     ],
   },
+  // Keep your tanzania and uganda objects exactly as they are below...
   tanzania: {
     all: [
       {
