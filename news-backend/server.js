@@ -228,45 +228,36 @@ app.get("/api/news", async (req, res) => {
     "promo",
   ];
 
-  // Calculate the timestamp threshold for exactly 48 hours ago
-  const FORTY_EIGHT_HOURS_AGO = Date.now() - 48 * 60 * 60 * 1000;
+  // --- CLEAN OPEN-GATE PROCESSING ---
+  const LOW_QUALITY_KEYWORDS = ['sponsored', 'advertorial', 'casino', 'betting', 'promo'];
 
-  combinedArticles = combinedArticles.filter((article) => {
+  combinedArticles = combinedArticles.filter(article => {
+    // 1. Instantly skip empty items
+    if (!article || !article.title) return false;
+
+    // 2. Prevent spam junk cards from loading
     const textToScan = `${article.title.toLowerCase()} ${article.snippet.toLowerCase()}`;
+    const isSpam = LOW_QUALITY_KEYWORDS.some(k => textToScan.includes(k));
+    if (isSpam) return false;
 
-    // Rule 1: Must not be spam
-    const isSpam = LOW_QUALITY_KEYWORDS.some((k) => textToScan.includes(k));
+    // 3. Prevent broken text fragments 
+    if (article.title.split(' ').length < 3) return false;
+    
+    // 4. Fallback: If a feed element completely omits a timestamp, protect it
+    if (!article.timestamp || isNaN(article.timestamp)) {
+      article.timestamp = Date.now();
+    }
 
-    // Rule 2: Title must be realistic
-    const isTooShort = article.title.split(" ").length < 3;
-
-    // Rule 3: STRICT AGE CHECK -> Must be fresher than 48 hours old
-    const isStale = article.timestamp < FORTY_EIGHT_HOURS_AGO;
-
-    return !isSpam && !isTooShort && !isStale;
+    return true; // AGE FILTER COMPLETELY REMOVED: All articles flow through!
   });
 
-  // Strict Numeric Sort (Newest first)
-  if (combinedArticles.length > 0) {
-    combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
-  } else {
-    // If a specific sub-category has nothing from the last 48 hours, prevent a blank screen
-    return res.json([
-      {
-        id: "no-recent-news",
-        title: `No new updates on ${activeTopic} in the last 48 hours.`,
-        link: "#",
-        source: "System Monitor",
-        date: "Current",
-        timestamp: Date.now(),
-        snippet:
-          "The feed is filtering properly. Check back soon for brand new updates or toggle another category tab!",
-      },
-    ]);
-  }
+  // Strict chronological placement execution (Newest calculations land at top index)
+  combinedArticles.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
 
-  res.json(combinedArticles);
-});
+  // Pull a generous chunk of articles (up to 50) so your screen stays completely packed
+  const finalPayload = combinedArticles.slice(0, 50);
+
+  res.json(finalPayload);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () =>
