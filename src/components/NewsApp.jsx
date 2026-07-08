@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "./App.css";
+import "./NewsApp.css";
 
 const BACKEND_URL =
   process.env.REACT_APP_BACKEND_URL || "https://kenya-news.onrender.com";
