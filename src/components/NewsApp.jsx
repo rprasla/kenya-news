@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "NewsApp.css"; // Optional styling sheet
+import "./NewsApp.css"; // Optional styling sheet
 
 export default function NewsFeed({ activeRegion, activeTopic, backendUrl }) {
   const [articles, setArticles] = useState([]);
