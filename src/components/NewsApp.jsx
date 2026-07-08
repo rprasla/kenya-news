@@ -16,34 +16,47 @@ export default function PersonalNewsApp() {
   const [activeRegion, setActiveRegion] = useState("kenya");
   const [activeTopic, setActiveTopic] = useState("all");
   const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true; // Prevents race conditions from overlapping tab clicks
+
     const fetchNews = async () => {
       setLoading(true);
-      setError(null);
       try {
+        // 1. We append a dynamic cache-buster timestamp parameter to the URL string
+        const cacheBuster = `&_cb=${Date.now()}`;
         const response = await fetch(
-          `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}`,
+          `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}${cacheBuster}`,
         );
-        if (!response.ok) throw new Error("Failed to load feeds.");
-        const data = await response.json();
 
-        // FORCE CHRONOLOGICAL TIMELINE RENDER (Newest First)
-        if (Array.isArray(data) && data.length > 0) {
-          data.sort((a, b) => b.timestamp - a.timestamp);
+        if (!response.ok) throw new Error("Failed to load news streams.");
+        const rawData = await response.json();
+
+        if (isMounted && Array.isArray(rawData)) {
+          // 2. CRITICAL CORE SORT: Cast every single value strictly to a Big Integer Number
+          const strictlySortedData = [...rawData].sort((a, b) => {
+            const valA = Number(a.timestamp || a.timeValue || a.rawDate || 0);
+            const valB = Number(b.timestamp || b.timeValue || b.rawDate || 0);
+            return valB - valA; // Strictly forces the newest Unix milliseconds to the top
+          });
+
+          setArticles(strictlySortedData);
         }
-
-        setArticles(data);
       } catch (err) {
-        setError(err.message);
+        console.error("Sorting connection error:", err.message);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
+
     fetchNews();
-  }, [activeRegion, activeTopic]);
+
+    return () => {
+      isMounted = false; // Cleanup previous stale network loops
+    };
+  }, [activeRegion, activeTopic]); // Re-runs layout perfectly when tabs change
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
