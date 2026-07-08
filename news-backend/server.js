@@ -279,7 +279,7 @@ app.get("/api/news", async (req, res) => {
 
   // --- CRITICAL STICKY SORT (Strictly Newest to Oldest) ---
   // Subtracting clean integers guarantees the latest updates freeze to index 0
-  combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
+  // combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
 
   // Return a generous slice of 50 stories so your feed is always full
   const finalCleanPayload = combinedArticles.slice(0, 50);
