@@ -226,30 +226,56 @@ app.get("/api/news", async (req, res) => {
     }
   }
 
-  // Filter out anomalies
-  combinedArticles = combinedArticles.filter(
-    (article) => article.title.split(" ").length >= 3,
-  );
+  // --- SPAM & AGE HORIZON FILTER ---
+  const LOW_QUALITY_KEYWORDS = [
+    "sponsored",
+    "advertorial",
+    "casino",
+    "betting",
+    "promo",
+  ];
 
-  // 2. STRICT NUMERIC SORTING ENFORCEMENT:
-  // Subtracting raw integers removes date string processing glitches entirely
+  // Calculate the timestamp threshold for exactly 48 hours ago
+  const FORTY_EIGHT_HOURS_AGO = Date.now() - 48 * 60 * 60 * 1000;
+
+  combinedArticles = combinedArticles.filter((article) => {
+    const textToScan = `${article.title.toLowerCase()} ${article.snippet.toLowerCase()}`;
+
+    // Rule 1: Must not be spam
+    const isSpam = LOW_QUALITY_KEYWORDS.some((k) => textToScan.includes(k));
+
+    // Rule 2: Title must be realistic
+    const isTooShort = article.title.split(" ").length < 3;
+
+    // Rule 3: STRICT AGE CHECK -> Must be fresher than 48 hours old
+    const isStale = article.timestamp < FORTY_EIGHT_HOURS_AGO;
+
+    return !isSpam && !isTooShort && !isStale;
+  });
+
+  // Strict Numeric Sort (Newest first)
   if (combinedArticles.length > 0) {
     combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
   } else {
+    // If a specific sub-category has nothing from the last 48 hours, prevent a blank screen
     return res.json([
       {
-        id: "error-fb",
-        title: "Updating regional feed alignment...",
+        id: "no-recent-news",
+        title: `No new updates on ${activeTopic} in the last 48 hours.`,
         link: "#",
-        source: "System",
-        date: "Now",
-        snippet: "Refreshing data streams. Toggle tabs or check back shortly!",
+        source: "System Monitor",
+        date: "Current",
+        timestamp: Date.now(),
+        snippet:
+          "The feed is filtering properly. Check back soon for brand new updates or toggle another category tab!",
       },
     ]);
   }
 
   res.json(combinedArticles);
-});
+
+  res.json(combinedArticles);
+};);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () =>
