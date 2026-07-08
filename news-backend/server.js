@@ -67,6 +67,10 @@ const FEED_CONFIG = {
         name: "Google Kenya Stream",
         url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22&hl=en-US&gl=US&ceid=US:en",
       },
+      {
+        name: "East Africa Daily",
+        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:%22Citizen+Digital%22+OR+source:Kenyans.co.ke&hl=en-US&gl=US&ceid=US:en",
+      },
     ],
     politics: [
       {
@@ -99,6 +103,10 @@ const FEED_CONFIG = {
         name: "Google News TZ",
         url: "https://news.google.com/rss/search?q=tanzania&hl=en-US&gl=US&ceid=US:en",
       },
+      {
+        name: "Tanzania Citizen Core",
+        url: "https://news.google.com/rss/search?q=source:%22The+Citizen%22+OR+source:%22Daily+News%22&hl=en-US&gl=US&ceid=US:en",
+      },
     ],
     politics: [
       {
@@ -130,6 +138,10 @@ const FEED_CONFIG = {
       {
         name: "Google News UG",
         url: "https://news.google.com/rss/search?q=uganda&hl=en-US&gl=US&ceid=US:en",
+      },
+      {
+        name: "Uganda Daily Monitor",
+        url: "https://news.google.com/rss/search?q=source:%22Daily+Monitor%22+OR+source:%22The+Independent%22&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
