@@ -24,7 +24,6 @@ export default function PersonalNewsApp() {
 
     const fetchNews = async () => {
       setLoading(true);
-      setError(null); // Reset error state on new fetch
       try {
         // Append a cache-buster parameter to smash past Vercel's Edge server memory saving
         const response = await fetch(
@@ -34,13 +33,48 @@ export default function PersonalNewsApp() {
         const data = await response.json();
 
         if (isMounted && Array.isArray(data)) {
-          // 🚫 SORTING ENTIRELY REMOVED
-          // Keeping the raw sequence of data exactly as it flows from the API stream
-          setArticles(data);
+          // 🛠️ UNIVERSAL STRING-TO-DATE CONVERTER SORTING ENGINE
+          const correctlyOrderedNews = [...data].sort((a, b) => {
+            // Helper function to turn strings like "11:45 AM - 7/8/2026" back into numeric milliseconds
+            const getNumericMs = (articleObj) => {
+              if (!articleObj) return 0;
+
+              // If the backend already sends a valid timestamp property, use it immediately
+              if (articleObj.timestamp && !isNaN(articleObj.timestamp))
+                return Number(articleObj.timestamp);
+              if (articleObj.timeValue && !isNaN(articleObj.timeValue))
+                return Number(articleObj.timeValue);
+
+              // If it only sends the string, parse it manually:
+              if (articleObj.date && typeof articleObj.date === "string") {
+                // Splits "11:45 AM - 7/8/2026" into ["11:45 AM", "7/8/2026"]
+                const dateParts = articleObj.date.split(" - ");
+                if (dateParts.length === 2) {
+                  const timeString = dateParts[0].trim(); // "11:45 AM"
+                  const dayString = dateParts[1].trim(); // "7/8/2026"
+
+                  const combinedParsedMs = Date.parse(
+                    `${dayString} ${timeString}`,
+                  );
+                  if (!isNaN(combinedParsedMs)) return combinedParsedMs;
+                }
+
+                // Fallback parse attempt for single raw date string objects
+                const genericParsedMs = Date.parse(articleObj.date);
+                if (!isNaN(genericParsedMs)) return genericParsedMs;
+              }
+
+              return 0; // Absolute fallback for entries with corrupted indices
+            };
+
+            // Subtract absolute milliseconds (Highest value/Newest timestamp moves to index 0)
+            return getNumericMs(b) - getNumericMs(a);
+          });
+
+          setArticles(correctlyOrderedNews);
         }
       } catch (err) {
-        console.error("Layout communication failure:", err.message);
-        if (isMounted) setError(err.message);
+        console.error("Layout chronological sorting failure:", err.message);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -103,7 +137,7 @@ export default function PersonalNewsApp() {
       <main className="max-w-3xl mx-auto px-4 py-6">
         {loading && (
           <p className="text-center text-sm py-10 text-slate-400">
-            Fetching active streams...
+            Filtering specific archives...
           </p>
         )}
         {error && (
