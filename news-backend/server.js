@@ -16,64 +16,80 @@ const FEED_CONFIG = {
   nairobi: {
     all: [
       {
-        name: "Nairobi Metro News",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+nairobi&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Nairobi Live",
+        url: "https://www.standardmedia.co.ke/rss/headlines.php",
+      },
+      {
+        name: "Google Nairobi Brief",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+nairobi&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "Nairobi Politics",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+politics+nairobi&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Politics",
+        url: "https://www.standardmedia.co.ke/rss/politics.php",
+      },
+      {
+        name: "Google Nairobi Politics",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+politics&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     business: [
       {
-        name: "Nairobi Business",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+business+nairobi&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Business",
+        url: "https://www.standardmedia.co.ke/rss/business.php",
+      },
+      {
+        name: "Google Nairobi Biz",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22+business&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
       {
-        name: "Nairobi Sports",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+sports+nairobi&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Sports",
+        url: "https://www.standardmedia.co.ke/rss/sports.php",
       },
     ],
     entertainment: [
       {
-        name: "Nairobi Lifestyle",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+lifestyle+OR+entertainment+nairobi&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Entertainment",
+        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
       },
     ],
   },
   kenya: {
     all: [
       {
-        name: "Kenya National News",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard National Live",
+        url: "https://www.standardmedia.co.ke/rss/kenya.php",
+      },
+      {
+        name: "Google Kenya Stream",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+OR+source:%22Capital+FM%22&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     politics: [
       {
-        name: "Kenya Politics",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+politics+OR+ruto+OR+gachagua&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Politics",
+        url: "https://www.standardmedia.co.ke/rss/politics.php",
       },
     ],
     business: [
       {
-        name: "Kenya Business",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+business+OR+shilling+OR+tax&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Business",
+        url: "https://www.standardmedia.co.ke/rss/business.php",
       },
     ],
     sports: [
       {
-        name: "Kenya Sports",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+sports+OR+athletics+OR+football&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Sports",
+        url: "https://www.standardmedia.co.ke/rss/sports.php",
       },
     ],
     entertainment: [
       {
-        name: "Kenya Showbiz",
-        url: "https://news.google.com/rss/search?q=source:%22The+Standard%22+OR+source:Kenyans.co.ke+entertainment+OR+celebrity&hl=en-US&gl=US&ceid=US:en",
+        name: "Standard Entertainment",
+        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
       },
     ],
   },
@@ -104,7 +120,7 @@ const FEED_CONFIG = {
     ],
     entertainment: [
       {
-        name: "TZ Lifestyle",
+        name: "TZ Culture",
         url: "https://news.google.com/rss/search?q=tanzania+entertainment&hl=en-US&gl=US&ceid=US:en",
       },
     ],
@@ -125,7 +141,7 @@ const FEED_CONFIG = {
     business: [
       {
         name: "UG Business",
-        url: "https://news.google.com/rss/search?q=uganda+business+economy&hl=en-US&gl=US&ceid=US:en",
+        url: "https://news.google.com/rss/search?q=uganda+business&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     sports: [
@@ -136,7 +152,7 @@ const FEED_CONFIG = {
     ],
     entertainment: [
       {
-        name: "UG Culture",
+        name: "UG Entertainment",
         url: "https://news.google.com/rss/search?q=uganda+entertainment&hl=en-US&gl=US&ceid=US:en",
       },
     ],
