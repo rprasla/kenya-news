@@ -166,7 +166,7 @@ app.get("/api/news", async (req, res) => {
 
   const regionConfig = FEED_CONFIG[activeCategory];
   if (!regionConfig)
-    return res.status(400).json({ error: "Invalid parameters." });
+    return res.status(400).json({ error: "Invalid search metrics." });
 
   const feeds =
     regionConfig[activeTopic] && regionConfig[activeTopic].length > 0
@@ -180,20 +180,33 @@ app.get("/api/news", async (req, res) => {
       const feedData = await parser.parseURL(feed.url);
       if (feedData && feedData.items) {
         const parsedItems = feedData.items.map((item) => {
-          // Clean Google News' source tag formats if present
           const cleanTitle = item.title
             ? item.title.split(" - ")[0]
-            : "Breaking Feed";
+            : "Live Update";
+
+          // 1. SAFE UNIX TIMESTAMP CONVERSION:
+          // Try parsing the date; if it fails or doesn't exist, fallback safely to right now
+          let articleTimestamp = Date.now();
+          if (item.pubDate) {
+            const parsedTime = Date.parse(item.pubDate);
+            if (!isNaN(parsedTime)) {
+              articleTimestamp = parsedTime; // Numeric millisecond stamp (e.g., 1783516000000)
+            }
+          }
 
           return {
             id: item.link || item.guid || Math.random().toString(),
             title: cleanTitle,
             link: item.link || "#",
             source: feed.name,
-            date: item.pubDate
-              ? new Date(item.pubDate).toLocaleDateString()
-              : "Just now",
-            rawDate: item.pubDate ? new Date(item.pubDate) : new Date(), // Used for strict internal sorting
+            timestamp: articleTimestamp, // Hidden strict sorting integer
+            date:
+              new Date(articleTimestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }) +
+              " - " +
+              new Date(articleTimestamp).toLocaleDateString(),
             snippet: item.contentSnippet
               ? item.contentSnippet.substring(0, 140) + "..."
               : "",
@@ -202,18 +215,30 @@ app.get("/api/news", async (req, res) => {
         combinedArticles = [...combinedArticles, ...parsedItems];
       }
     } catch (err) {
-      console.error(`Skipped ${feed.name}:`, err.message);
+      console.error(`Fetch error on ${feed.name}:`, err.message);
     }
   }
 
-  // Filter out low word-count bugs
+  // Filter out anomalies
   combinedArticles = combinedArticles.filter(
     (article) => article.title.split(" ").length >= 3,
   );
 
-  // Chronological Sort: Ensures news from minutes ago appears at the top
+  // 2. STRICT NUMERIC SORTING ENFORCEMENT:
+  // Subtracting raw integers removes date string processing glitches entirely
   if (combinedArticles.length > 0) {
-    combinedArticles.sort((a, b) => b.rawDate - a.rawDate);
+    combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
+  } else {
+    return res.json([
+      {
+        id: "error-fb",
+        title: "Updating regional feed alignment...",
+        link: "#",
+        source: "System",
+        date: "Now",
+        snippet: "Refreshing data streams. Toggle tabs or check back shortly!",
+      },
+    ]);
   }
 
   res.json(combinedArticles);
