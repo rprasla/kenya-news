@@ -20,32 +20,61 @@ export default function PersonalNewsApp() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isMounted = true; // Prevents race conditions from overlapping tab clicks
+    let isMounted = true;
 
     const fetchNews = async () => {
       setLoading(true);
       try {
-        // 1. We append a dynamic cache-buster timestamp parameter to the URL string
-        const cacheBuster = `&_cb=${Date.now()}`;
+        // Append a cache-buster parameter to smash past Vercel's Edge server memory saving
         const response = await fetch(
-          `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}${cacheBuster}`,
+          `${BACKEND_URL}/api/news?category=${activeRegion}&topic=${activeTopic}&_cb=${Date.now()}`,
         );
+        if (!response.ok) throw new Error("Failed to pull raw feeds.");
+        const data = await response.json();
 
-        if (!response.ok) throw new Error("Failed to load news streams.");
-        const rawData = await response.json();
+        if (isMounted && Array.isArray(data)) {
+          // 🛠️ UNIVERSAL STRING-TO-DATE CONVERTER SORTING ENGINE
+          const correctlyOrderedNews = [...data].sort((a, b) => {
+            // Helper function to turn strings like "11:45 AM - 7/8/2026" back into numeric milliseconds
+            const getNumericMs = (articleObj) => {
+              if (!articleObj) return 0;
 
-        if (isMounted && Array.isArray(rawData)) {
-          // 2. CRITICAL CORE SORT: Cast every single value strictly to a Big Integer Number
-          const strictlySortedData = [...rawData].sort((a, b) => {
-            const valA = Number(a.timestamp || a.timeValue || a.rawDate || 0);
-            const valB = Number(b.timestamp || b.timeValue || b.rawDate || 0);
-            return valB - valA; // Strictly forces the newest Unix milliseconds to the top
+              // If the backend already sends a valid timestamp property, use it immediately
+              if (articleObj.timestamp && !isNaN(articleObj.timestamp))
+                return Number(articleObj.timestamp);
+              if (articleObj.timeValue && !isNaN(articleObj.timeValue))
+                return Number(articleObj.timeValue);
+
+              // If it only sends the string, parse it manually:
+              if (articleObj.date && typeof articleObj.date === "string") {
+                // Splits "11:45 AM - 7/8/2026" into ["11:45 AM", "7/8/2026"]
+                const dateParts = articleObj.date.split(" - ");
+                if (dateParts.length === 2) {
+                  const timeString = dateParts[0].trim(); // "11:45 AM"
+                  const dayString = dateParts[1].trim(); // "7/8/2026"
+
+                  const combinedParsedMs = Date.parse(
+                    `${dayString} ${timeString}`,
+                  );
+                  if (!isNaN(combinedParsedMs)) return combinedParsedMs;
+                }
+
+                // Fallback parse attempt for single raw date string objects
+                const genericParsedMs = Date.parse(articleObj.date);
+                if (!isNaN(genericParsedMs)) return genericParsedMs;
+              }
+
+              return 0; // Absolute fallback for entries with corrupted indices
+            };
+
+            // Subtract absolute milliseconds (Highest value/Newest timestamp moves to index 0)
+            return getNumericMs(b) - getNumericMs(a);
           });
 
-          setArticles(strictlySortedData);
+          setArticles(correctlyOrderedNews);
         }
       } catch (err) {
-        console.error("Sorting connection error:", err.message);
+        console.error("Layout chronological sorting failure:", err.message);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -54,9 +83,9 @@ export default function PersonalNewsApp() {
     fetchNews();
 
     return () => {
-      isMounted = false; // Cleanup previous stale network loops
+      isMounted = false;
     };
-  }, [activeRegion, activeTopic]); // Re-runs layout perfectly when tabs change
+  }, [activeRegion, activeTopic]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
