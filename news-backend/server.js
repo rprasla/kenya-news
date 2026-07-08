@@ -144,20 +144,19 @@ const FEED_CONFIG = {
 };
 
 app.get("/api/news", async (req, res) => {
+  // Capture what region and category the user clicked on their phone
   const { category, topic } = req.query;
 
-  // Fallback defaults to keep the app functional
+  // Standardize fallbacks to avoid hitting blank keys
   const activeCategory = category || "kenya";
   const activeTopic = topic || "all";
 
   const regionConfig = FEED_CONFIG[activeCategory];
   if (!regionConfig) {
-    return res
-      .status(400)
-      .json({ error: "Invalid country or city parameter." });
+    return res.status(400).json({ error: "Invalid country or city selected." });
   }
 
-  // Pick the target array based on the requested tab
+  // 1. Point dynamically to the exact topic array Google already pre-filtered for us
   const feeds =
     regionConfig[activeTopic] && regionConfig[activeTopic].length > 0
       ? regionConfig[activeTopic]
@@ -169,44 +168,57 @@ app.get("/api/news", async (req, res) => {
     try {
       const feedData = await parser.parseURL(feed.url);
       if (feedData && feedData.items) {
-        const parsedItems = feedData.items.map((item) => ({
-          id: item.link || item.guid || Math.random().toString(),
-          title: item.title ? item.title.split(" - ")[0] : "Breaking News", // Strips trailing publication name strings
-          link: item.link || "#",
-          source: feed.name,
-          date: item.pubDate
-            ? new Date(item.pubDate).toLocaleDateString()
-            : "Recent",
-          snippet: item.contentSnippet
-            ? item.contentSnippet.substring(0, 150) + "..."
-            : "",
-        }));
+        const parsedItems = feedData.items.map((item) => {
+          // Clean up titles: Google News automatically sticks " - Source" at the end of headings
+          // e.g., "Ruto announces new tax plan - Kenyans.co.ke" becomes "Ruto announces new tax plan"
+          const cleanTitle = item.title
+            ? item.title.split(" - ")[0]
+            : "Breaking News";
+
+          return {
+            id: item.link || item.guid || Math.random().toString(),
+            title: cleanTitle,
+            link: item.link || "#",
+            source: feed.name,
+            date: item.pubDate
+              ? new Date(item.pubDate).toLocaleDateString()
+              : "Recent",
+            snippet: item.contentSnippet
+              ? item.contentSnippet.substring(0, 150) + "..."
+              : "Click link to read full coverage.",
+          };
+        });
         combinedArticles = [...combinedArticles, ...parsedItems];
       }
     } catch (err) {
-      console.error(`Fetch error on ${feed.name}:`, err.message);
+      console.error(`Fetch error encountered on ${feed.name}:`, err.message);
     }
   }
 
-  // Basic filtering for length and relevance
+  // 2. Simple layout formatting: Clear out broken data links or empty titles
   combinedArticles = combinedArticles.filter(
     (article) => article.title.split(" ").length >= 3,
   );
 
-  // Fallback logic to prevent a blank UI screen
-  if (combinedArticles.length === 0) {
+  // 3. Chronological sorting: Ensure the freshest articles sit at the very top of the phone screen
+  if (combinedArticles.length > 0) {
+    combinedArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+  } else {
+    // Graceful interface feedback if Google takes a moment to aggregate a tab
     return res.json([
       {
-        id: "fallback-1",
-        title: `Updating ${activeTopic} feed...`,
+        id: "status-fallback",
+        title: `Updating the ${activeTopic} dashboard...`,
         link: "#",
-        source: "System",
+        source: "System Status",
         date: "Now",
-        snippet: "Live items are updating. Switch tabs or refresh in a moment.",
+        snippet:
+          "The news desks are refreshing current stories. Tap another tab or check back in a moment!",
       },
     ]);
   }
 
+  // Deliver the sorted, pre-filtered array straight to the React frontend
   res.json(combinedArticles);
 });
 
