@@ -105,7 +105,7 @@ export default function PersonalNewsApp() {
         )}
 
         {!loading && !error && (
-          <div className="space-y-4">
+          <div className="news-grid grid-cols-1 gap-4">
             {/* Find your articles mapping list and wrap it exactly like this */}
 
             {articles &&
