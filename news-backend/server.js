@@ -16,18 +16,58 @@ const FEED_CONFIG = {
   nairobi: {
     all: [
       {
-        name: "Standard Latest Live",
-        url: "https://www.standardmedia.co.ke/rss/latest",
+        name: "KBC Nairobi News",
+        url: "https://www.kbc.co.ke/category/county-news/nairobi/feed/",
       },
-      { name: "Kenyans Breaking", url: "https://www.kenyans.co.ke/feeds/news" },
+      {
+        name: "Kenyans City Streams",
+        url: "https://news.google.com/rss/search?q=source:Kenyans.co.ke+Nairobi&hl=en-US&gl=US&ceid=US:en",
+      },
     ],
     politics: [
       {
-        name: "Standard Politics Feed",
-        url: "https://www.standardmedia.co.ke/rss/politics.php",
+        name: "KBC Politics Channel",
+        url: "https://www.kbc.co.ke/category/news/politics/feed/",
       },
     ],
     business: [
+      {
+        name: "KBC Business Tech",
+        url: "https://www.kbc.co.ke/category/business/feed/",
+      },
+    ],
+    sports: [
+      {
+        name: "KBC Sports Central",
+        url: "https://www.kbc.co.ke/category/sports/feed/",
+      },
+    ],
+    entertainment: [
+      {
+        name: "KBC Lifestyle Show",
+        url: "https://www.kbc.co.ke/category/entertainment/feed/",
+      },
+    ],
+  },
+  kenya: {
+    all: [
+      {
+        name: "KBC National Live",
+        url: "https://www.kbc.co.ke/category/news/kenya/feed/",
+      },
+      { name: "Kenya News Agency Daily", url: "https://kenyanews.go.ke/feed/" },
+    ],
+    politics: [
+      {
+        name: "KBC National Politics",
+        url: "https://www.kbc.co.ke/category/news/politics/feed/",
+      },
+    ],
+    business: [
+      {
+        name: "KBC Financial Wire",
+        url: "https://www.kbc.co.ke/category/business/feed/",
+      },
       {
         name: "Business Daily Core",
         url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
@@ -35,54 +75,14 @@ const FEED_CONFIG = {
     ],
     sports: [
       {
-        name: "Standard Sports Network",
-        url: "https://www.standardmedia.co.ke/rss/sports.php",
+        name: "KBC National Sports",
+        url: "https://www.kbc.co.ke/category/sports/feed/",
       },
     ],
     entertainment: [
       {
-        name: "Standard Entertainment",
-        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
-      },
-    ],
-  },
-  kenya: {
-    all: [
-      {
-        name: "Standard Main Headlines",
-        url: "https://www.standardmedia.co.ke/rss/headlines.php",
-      },
-      {
-        name: "Kenyans Core News",
-        url: "https://www.kenyans.co.ke/feeds/news",
-      },
-    ],
-    politics: [
-      {
-        name: "Standard Politics",
-        url: "https://www.standardmedia.co.ke/rss/politics.php",
-      },
-    ],
-    business: [
-      {
-        name: "Standard Financials",
-        url: "https://www.standardmedia.co.ke/rss/business.php",
-      },
-      {
-        name: "Business Daily Realtime",
-        url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
-      },
-    ],
-    sports: [
-      {
-        name: "Standard Sports",
-        url: "https://www.standardmedia.co.ke/rss/sports.php",
-      },
-    ],
-    entertainment: [
-      {
-        name: "Standard Entertainment",
-        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
+        name: "KBC Showbiz",
+        url: "https://www.kbc.co.ke/category/entertainment/feed/",
       },
     ],
   },
@@ -95,7 +95,7 @@ const FEED_CONFIG = {
     ],
     politics: [
       {
-        name: "Google Realtime Politics TZ",
+        name: "Google Politics TZ",
         url: "https://news.google.com/rss/search?q=tanzania+politics&hl=en-US&gl=US&ceid=US:en",
       },
     ],
@@ -107,13 +107,13 @@ const FEED_CONFIG = {
     ],
     sports: [
       {
-        name: "Google Realtime Sports TZ",
+        name: "Google Sports TZ",
         url: "https://news.google.com/rss/search?q=tanzania+sports&hl=en-US&gl=US&ceid=US:en",
       },
     ],
     entertainment: [
       {
-        name: "Google Realtime Culture TZ",
+        name: "Google Culture TZ",
         url: "https://news.google.com/rss/search?q=tanzania+entertainment&hl=en-US&gl=US&ceid=US:en",
       },
     ],
@@ -145,7 +145,7 @@ const FEED_CONFIG = {
     ],
     entertainment: [
       {
-        name: "Google Realtime Culture UG",
+        name: "Google Culture UG",
         url: "https://news.google.com/rss/search?q=uganda+entertainment&hl=en-US&gl=US&ceid=US:en",
       },
     ],
@@ -229,35 +229,63 @@ app.get("/api/news", async (req, res) => {
   ];
 
   // --- CLEAN OPEN-GATE PROCESSING ---
-  const LOW_QUALITY_KEYWORDS = ['sponsored', 'advertorial', 'casino', 'betting', 'promo'];
+  const LOW_QUALITY_KEYWORDS = [
+    "sponsored",
+    "advertorial",
+    "casino",
+    "betting",
+    "promo",
+  ];
 
-  combinedArticles = combinedArticles.filter(article => {
-    // 1. Instantly skip empty items
-    if (!article || !article.title) return false;
+  // --- ROBUST UNIFIED PARSING & SORTING ---
+  combinedArticles = combinedArticles.map((article) => {
+    // Forcefully normalize all erratic incoming RSS date formats into real Unix milliseconds
+    let standardTimestamp = Date.now(); // fallback to now if broken
 
-    // 2. Prevent spam junk cards from loading
-    const textToScan = `${article.title.toLowerCase()} ${article.snippet.toLowerCase()}`;
-    const isSpam = LOW_QUALITY_KEYWORDS.some(k => textToScan.includes(k));
-    if (isSpam) return false;
+    if (article.pubDate || article.date || article.isoDate) {
+      const rawDateString = article.pubDate || article.date || article.isoDate;
+      const parsedTime = Date.parse(rawDateString);
 
-    // 3. Prevent broken text fragments 
-    if (article.title.split(' ').length < 3) return false;
-    
-    // 4. Fallback: If a feed element completely omits a timestamp, protect it
-    if (!article.timestamp || isNaN(article.timestamp)) {
-      article.timestamp = Date.now();
+      // If JavaScript successfully converts the date string to a number, use it
+      if (!isNaN(parsedTime)) {
+        standardTimestamp = parsedTime;
+      }
     }
 
-    return true; // AGE FILTER COMPLETELY REMOVED: All articles flow through!
+    // Return the polished item with a clean numeric timestamp property
+    return {
+      ...article,
+      timestamp: standardTimestamp,
+    };
   });
 
-  // Strict chronological placement execution (Newest calculations land at top index)
-  combinedArticles.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+  // --- GENERAL FRAGMENT FILTER ---
+  combinedArticles = combinedArticles.filter((article) => {
+    if (!article || !article.title) return false;
 
-  // Pull a generous chunk of articles (up to 50) so your screen stays completely packed
-  const finalPayload = combinedArticles.slice(0, 50);
+    // Drop spam and empty link fragments
+    const lowQualityTerms = [
+      "sponsored",
+      "advertorial",
+      "casino",
+      "betting",
+      "promo",
+    ];
+    const contentText = `${article.title.toLowerCase()} ${article.snippet.toLowerCase()}`;
+    const isSpam = lowQualityTerms.some((term) => contentText.includes(term));
 
-  res.json(finalPayload);
+    return !isSpam && article.title.split(" ").length >= 3;
+  });
+
+  // --- CRITICAL STICKY SORT (Strictly Newest to Oldest) ---
+  // Subtracting clean integers guarantees the latest updates freeze to index 0
+  combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
+
+  // Return a generous slice of 50 stories so your feed is always full
+  const finalCleanPayload = combinedArticles.slice(0, 50);
+
+  res.json(finalCleanPayload);
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () =>
