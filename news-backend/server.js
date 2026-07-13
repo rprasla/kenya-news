@@ -15,19 +15,21 @@ const parser = new Parser({
 const FEED_CONFIG = {
   nairobi: {
     all: [
+      { name: "Nairobi Wire Live", url: "https://nairobiwire.com/feed" },
       {
-        name: "KBC Nairobi News",
+        name: "KBC Nairobi Stream",
         url: "https://www.kbc.co.ke/category/county-news/nairobi/feed/",
       },
-      {
-        name: "Nairobi News Wire",
-        url: "https://news.google.com/rss/search?q=Nairobi&hl=en-KE&gl=KE&ceid=KE:en",
-      },
+      { name: "K24 Metro News", url: "https://k24.digital/feed" },
     ],
     politics: [
       {
-        name: "Capital FM Politics",
-        url: "https://news.google.com/rss/search?q=Nairobi+Politics&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "Nairobi Wire Politics",
+        url: "https://nairobiwire.com/category/news/politics/feed",
+      },
+      {
+        name: "KBC Politics Desk",
+        url: "https://www.kbc.co.ke/category/news/politics/feed/",
       },
     ],
     business: [
@@ -35,17 +37,26 @@ const FEED_CONFIG = {
         name: "KBC Business Tech",
         url: "https://www.kbc.co.ke/category/business/feed/",
       },
+      {
+        name: "K24 Business Stream",
+        url: "https://k24.digital/category/business/feed",
+      },
     ],
     sports: [
       {
-        name: "KBC Sports Central",
+        name: "Nairobi Wire Sports",
+        url: "https://nairobiwire.com/category/sports/feed",
+      },
+      {
+        name: "KBC Sports Desk",
         url: "https://www.kbc.co.ke/category/sports/feed/",
       },
     ],
     entertainment: [
+      { name: "Ghafla Kenya Showbiz", url: "https://ghafla.co.ke/ke/feed" },
       {
-        name: "Nairobi Gossip Core",
-        url: "https://news.google.com/rss/search?q=Nairobi+Entertainment&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "KBC Entertainment",
+        url: "https://www.kbc.co.ke/category/entertainment/feed/",
       },
     ],
   },
@@ -56,21 +67,27 @@ const FEED_CONFIG = {
         url: "https://www.kbc.co.ke/category/news/kenya/feed/",
       },
       { name: "Kenya News Agency", url: "https://kenyanews.go.ke/feed/" },
+      { name: "K24 Digital Kenya", url: "https://k24.digital/feed" },
+      { name: "Nairobi Wire Breaking", url: "https://nairobiwire.com/feed" },
     ],
     politics: [
       {
-        name: "KBC National Politics",
+        name: "KBC Politics Central",
         url: "https://www.kbc.co.ke/category/news/politics/feed/",
+      },
+      {
+        name: "K24 Politics Stream",
+        url: "https://k24.digital/category/news/politics/feed",
       },
     ],
     business: [
       {
-        name: "Business Daily Wire",
-        url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
+        name: "KBC Financial News",
+        url: "https://www.kbc.co.ke/category/business/feed/",
       },
       {
-        name: "KBC Financial Wire",
-        url: "https://www.kbc.co.ke/category/business/feed/",
+        name: "K24 Business Core",
+        url: "https://k24.digital/category/business/feed",
       },
     ],
     sports: [
@@ -78,10 +95,15 @@ const FEED_CONFIG = {
         name: "KBC National Sports",
         url: "https://www.kbc.co.ke/category/sports/feed/",
       },
+      {
+        name: "K24 Sports Desk",
+        url: "https://k24.digital/category/sports/feed",
+      },
     ],
     entertainment: [
+      { name: "Ghafla Showbiz Kenya", url: "https://ghafla.co.ke/ke/feed" },
       {
-        name: "KBC Showbiz",
+        name: "KBC Lifestyle",
         url: "https://www.kbc.co.ke/category/entertainment/feed/",
       },
     ],
