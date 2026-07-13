@@ -16,75 +16,77 @@ const FEED_CONFIG = {
   nairobi: {
     all: [
       {
-        name: "The Standard Headlines",
-        url: "https://www.standardmedia.co.ke/rss/headlines.php",
+        name: "KBC Nairobi News",
+        url: "https://www.kbc.co.ke/category/county-news/nairobi/feed/",
       },
       {
-        name: "The Standard Kenya",
-        url: "https://www.standardmedia.co.ke/rss/kenya.php",
+        name: "Nairobi News Wire",
+        url: "https://news.google.com/rss/search?q=Nairobi&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     politics: [
       {
-        name: "The Standard Politics",
-        url: "https://www.standardmedia.co.ke/rss/politics.php",
+        name: "Capital FM Politics",
+        url: "https://news.google.com/rss/search?q=Nairobi+Politics&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     business: [
       {
-        name: "The Standard Business",
-        url: "https://www.standardmedia.co.ke/rss/business.php",
+        name: "KBC Business Tech",
+        url: "https://www.kbc.co.ke/category/business/feed/",
       },
     ],
     sports: [
       {
-        name: "The Standard Sports",
-        url: "https://www.standardmedia.co.ke/rss/sports.php",
+        name: "KBC Sports Central",
+        url: "https://www.kbc.co.ke/category/sports/feed/",
       },
     ],
     entertainment: [
       {
-        name: "The Standard Entertainment",
-        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
+        name: "Nairobi Gossip Core",
+        url: "https://news.google.com/rss/search?q=Nairobi+Entertainment&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
   },
   kenya: {
     all: [
       {
-        name: "The Standard Kenya News",
-        url: "https://www.standardmedia.co.ke/rss/kenya.php",
+        name: "KBC National Live",
+        url: "https://www.kbc.co.ke/category/news/kenya/feed/",
       },
-      {
-        name: "The Standard Headlines",
-        url: "https://www.standardmedia.co.ke/rss/headlines.php",
-      },
+      { name: "Kenya News Agency", url: "https://kenyanews.go.ke/feed/" },
     ],
     politics: [
       {
-        name: "The Standard Politics",
-        url: "https://www.standardmedia.co.ke/rss/politics.php",
+        name: "KBC National Politics",
+        url: "https://www.kbc.co.ke/category/news/politics/feed/",
       },
     ],
     business: [
       {
-        name: "The Standard Business",
-        url: "https://www.standardmedia.co.ke/rss/business.php",
+        name: "Business Daily Wire",
+        url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
+      },
+      {
+        name: "KBC Financial Wire",
+        url: "https://www.kbc.co.ke/category/business/feed/",
       },
     ],
     sports: [
       {
-        name: "The Standard Sports",
-        url: "https://www.standardmedia.co.ke/rss/sports.php",
+        name: "KBC National Sports",
+        url: "https://www.kbc.co.ke/category/sports/feed/",
       },
     ],
     entertainment: [
       {
-        name: "The Standard Entertainment",
-        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
+        name: "KBC Showbiz",
+        url: "https://www.kbc.co.ke/category/entertainment/feed/",
       },
     ],
   },
+
   // Keep your tanzania and uganda objects exactly as they are below...
   tanzania: {
     all: [
