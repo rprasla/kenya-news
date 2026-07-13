@@ -176,9 +176,6 @@ const FEED_CONFIG = {
   },
 };
 
-const RSSParser = require("rss-parser");
-const parser = new RSSParser();
-
 app.get("/api/news", async (req, res) => {
   // Clear any downstream proxy memory caps
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
