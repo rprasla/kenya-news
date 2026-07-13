@@ -16,68 +16,72 @@ const FEED_CONFIG = {
   nairobi: {
     all: [
       {
-        name: "Google Nairobi Live",
-        url: "https://news.google.com/rss/search?q=Nairobi+when:48h&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Headlines",
+        url: "https://www.standardmedia.co.ke/rss/headlines.php",
+      },
+      {
+        name: "The Standard Kenya",
+        url: "https://www.standardmedia.co.ke/rss/kenya.php",
       },
     ],
     politics: [
       {
-        name: "Google Nairobi Politics",
-        url: "https://news.google.com/rss/search?q=Nairobi+politics+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Politics",
+        url: "https://www.standardmedia.co.ke/rss/politics.php",
       },
     ],
     business: [
       {
-        name: "Google Nairobi Business",
-        url: "https://news.google.com/rss/search?q=Nairobi+business+OR+economy&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Business",
+        url: "https://www.standardmedia.co.ke/rss/business.php",
       },
     ],
     sports: [
       {
-        name: "Google Nairobi Sports",
-        url: "https://news.google.com/rss/search?q=Nairobi+sports&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Sports",
+        url: "https://www.standardmedia.co.ke/rss/sports.php",
       },
     ],
     entertainment: [
       {
-        name: "Google Nairobi Culture",
-        url: "https://news.google.com/rss/search?q=Nairobi+entertainment+OR+celebrity&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Entertainment",
+        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
       },
     ],
   },
   kenya: {
     all: [
       {
-        name: "Google Kenya Top Stories",
-        url: "https://news.google.com/rss/headlines/section/geo/Kenya?hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Kenya News",
+        url: "https://www.standardmedia.co.ke/rss/kenya.php",
       },
       {
-        name: "Google Kenya Breaking",
-        url: "https://news.google.com/rss/search?q=Kenya+news+when:24h&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Headlines",
+        url: "https://www.standardmedia.co.ke/rss/headlines.php",
       },
     ],
     politics: [
       {
-        name: "Google Kenya Politics",
-        url: "https://news.google.com/rss/search?q=Kenya+politics+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Politics",
+        url: "https://www.standardmedia.co.ke/rss/politics.php",
       },
     ],
     business: [
       {
-        name: "Google Kenya Business",
-        url: "https://news.google.com/rss/search?q=Kenya+business+OR+shilling+OR+finance&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Business",
+        url: "https://www.standardmedia.co.ke/rss/business.php",
       },
     ],
     sports: [
       {
-        name: "Google Kenya Sports",
-        url: "https://news.google.com/rss/search?q=Kenya+sports+OR+Athletics+OR+Harambee&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Sports",
+        url: "https://www.standardmedia.co.ke/rss/sports.php",
       },
     ],
     entertainment: [
       {
-        name: "Google Kenya Entertainment",
-        url: "https://news.google.com/rss/search?q=Kenya+entertainment+OR+showbiz&hl=en-KE&gl=KE&ceid=KE:en",
+        name: "The Standard Entertainment",
+        url: "https://www.standardmedia.co.ke/rss/entertainment.php",
       },
     ],
   },
