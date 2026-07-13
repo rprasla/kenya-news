@@ -15,56 +15,70 @@ const parser = new Parser({
 const FEED_CONFIG = {
   nairobi: {
     all: [
-      { name: "Nairobi Wire Breaking", url: "https://nairobiwire.com/feed" },
-      { name: "K24 Metro Streams", url: "https://k24.digital/feed" },
+      {
+        name: "Google Nairobi Live",
+        url: "https://news.google.com/rss/search?q=Nairobi+when:48h&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     politics: [
       {
-        name: "Nairobi Wire Politics",
-        url: "https://nairobiwire.com/category/news/politics/feed",
+        name: "Google Nairobi Politics",
+        url: "https://news.google.com/rss/search?q=Nairobi+politics+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     business: [
       {
-        name: "K24 Business Core",
-        url: "https://k24.digital/category/business/feed",
+        name: "Google Nairobi Business",
+        url: "https://news.google.com/rss/search?q=Nairobi+business+OR+economy&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     sports: [
       {
-        name: "Nairobi Wire Sports",
-        url: "https://nairobiwire.com/category/sports/feed",
+        name: "Google Nairobi Sports",
+        url: "https://news.google.com/rss/search?q=Nairobi+sports&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     entertainment: [
-      { name: "Ghafla Entertainment", url: "https://ghafla.co.ke/ke/feed" },
+      {
+        name: "Google Nairobi Culture",
+        url: "https://news.google.com/rss/search?q=Nairobi+entertainment+OR+celebrity&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
   },
   kenya: {
     all: [
-      { name: "K24 National Headlines", url: "https://k24.digital/feed" },
-      { name: "Nairobi Wire National", url: "https://nairobiwire.com/feed" },
+      {
+        name: "Google Kenya Top Stories",
+        url: "https://news.google.com/rss/headlines/section/geo/Kenya?hl=en-KE&gl=KE&ceid=KE:en",
+      },
+      {
+        name: "Google Kenya Breaking",
+        url: "https://news.google.com/rss/search?q=Kenya+news+when:24h&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     politics: [
       {
-        name: "K24 Statehouse Briefs",
-        url: "https://k24.digital/category/news/politics/feed",
+        name: "Google Kenya Politics",
+        url: "https://news.google.com/rss/search?q=Kenya+politics+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     business: [
       {
-        name: "Business Daily Core",
-        url: "https://www.businessdailyafrica.com/service/search/feed/bd/706/feed.rss",
+        name: "Google Kenya Business",
+        url: "https://news.google.com/rss/search?q=Kenya+business+OR+shilling+OR+finance&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     sports: [
       {
-        name: "K24 Sports Desk",
-        url: "https://k24.digital/category/sports/feed",
+        name: "Google Kenya Sports",
+        url: "https://news.google.com/rss/search?q=Kenya+sports+OR+Athletics+OR+Harambee&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     entertainment: [
-      { name: "Ghafla Kenya Showbiz", url: "https://ghafla.co.ke/ke/feed" },
+      {
+        name: "Google Kenya Entertainment",
+        url: "https://news.google.com/rss/search?q=Kenya+entertainment+OR+showbiz&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
   },
   // Keep your tanzania and uganda objects exactly as they are below...
