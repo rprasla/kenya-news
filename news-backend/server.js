@@ -180,63 +180,68 @@ const RSSParser = require("rss-parser");
 const parser = new RSSParser();
 
 app.get("/api/news", async (req, res) => {
+  // Clear any downstream proxy memory caps
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+
   const { category, topic } = req.query;
 
-  // 1. Guard against unexpected query values
   if (!FEED_CONFIG[category] || !FEED_CONFIG[category][topic]) {
     return res
       .status(400)
-      .json({ error: "Invalid routing query configuration values." });
+      .json({ error: "Invalid layout configuration parameters requested." });
   }
 
-  const feedsToQuery = FEED_CONFIG[category][topic];
-  let accumulatedArticles = []; // Master structural tray
+  const targetedFeeds = FEED_CONFIG[category][topic];
+  let combinedArticles = [];
+  const uniqueUrls = new Set(); // Prevents duplicate URLs from filling up slots
 
-  // 2. Loop through every single feed parameter independently
-  for (const feed of feedsToQuery) {
+  for (const feed of targetedFeeds) {
     try {
-      // Fetch fresh raw data directly bypassing regional edge proxy memory sets
-      const parsedData = await parser.parseURL(
-        `${feed.url}?nocache=${Date.now()}`,
-      );
+      // Append a true system timestamp parameter to bypass target feed caching policies
+      const freshUrl = `${feed.url}${feed.url.includes("?") ? "&" : "?"}_nocache=${Date.now()}`;
+      const parsed = await parser.parseURL(freshUrl);
 
-      if (parsedData && parsedData.items) {
-        const structuralItems = parsedData.items.map((item, index) => {
-          // Force parse erratic date footprints safely into Unix integers
+      if (parsed && parsed.items) {
+        parsed.items.forEach((item, index) => {
+          // Skip if we already added this exact article URL
+          if (item.link && uniqueUrls.has(item.link)) return;
+          if (item.link) uniqueUrls.add(item.link);
+
           let numericTimestamp = Date.now();
-          const rawDate = item.pubDate || item.date || item.isoDate;
-          if (rawDate) {
-            const parsedTime = Date.parse(rawDate);
-            if (!isNaN(parsedTime)) numericTimestamp = parsedTime;
+          const rawDateStr = item.pubDate || item.date || item.isoDate;
+          if (rawDateStr) {
+            const parsedMs = Date.parse(rawDateStr);
+            if (!isNaN(parsedMs)) numericTimestamp = parsedMs;
           }
 
-          return {
+          combinedArticles.push({
             id: item.guid || item.id || `${feed.name}-${index}-${Date.now()}`,
-            title: item.title || "No Headline Provided",
-            link: item.link,
-            snippet: item.contentSnippet || item.summary || "",
+            title: item.title || "Headline Unavailable",
+            link: item.link || "#",
+            snippet: item.contentSnippet || item.summary || item.content || "",
             source: feed.name,
             date: item.pubDate || item.date || "Live Now",
-            timestamp: numericTimestamp, // Critical engine property
-          };
+            timestamp: numericTimestamp,
+          });
         });
-
-        // 🎯 THE LIFESAVING FIX: Stack items together dynamically rather than overwriting!
-        accumulatedArticles = [...accumulatedArticles, ...structuralItems];
       }
     } catch (feedError) {
-      console.error(
-        `Bypassed down target endpoint offline [${feed.name}]:`,
-        feedError.message,
-      );
+      console.error(`[Feed Offline Bypass] ${feed.name}:`, feedError.message);
     }
   }
 
-  // 3. SECURE TIME SORT (Ensures all raw 2026 content is frozen right at the top)
-  accumulatedArticles.sort((a, b) => b.timestamp - a.timestamp);
+  // Strict Chronological Sort (Newest 2026 articles float to index 0)
+  combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
 
-  // 4. Return a highly generous slice to your frontend
-  res.json(accumulatedArticles.slice(0, 60));
+  // 🎯 THE FIX: Change your slice parameter to pull up to 50 items!
+  const optimizedPayload = combinedArticles.slice(0, 50);
+
+  console.log(
+    `Successfully dispatched ${optimizedPayload.length} items for ${category}-${topic}`,
+  );
+  res.json(optimizedPayload);
 });
 
 const PORT = process.env.PORT || 5000;
