@@ -21,6 +21,10 @@ const FEED_CONFIG = {
         url: "https://www.kbc.co.ke/category/county-news/nairobi/feed/",
       },
       { name: "K24 Metro News", url: "https://k24.digital/feed" },
+      {
+        name: "Google Nairobi Live",
+        url: "https://news.google.com/rss/search?q=Nairobi+when:3d&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     politics: [
       {
@@ -30,6 +34,10 @@ const FEED_CONFIG = {
       {
         name: "KBC Politics Desk",
         url: "https://www.kbc.co.ke/category/news/politics/feed/",
+      },
+      {
+        name: "Google Nairobi Politics",
+        url: "https://news.google.com/rss/search?q=Nairobi+(politics+OR+governor+OR+county+assembly)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     business: [
@@ -41,6 +49,10 @@ const FEED_CONFIG = {
         name: "K24 Business Stream",
         url: "https://k24.digital/category/business/feed",
       },
+      {
+        name: "Google Nairobi Business",
+        url: "https://news.google.com/rss/search?q=Nairobi+(business+OR+economy+OR+real+estate+OR+shilling)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     sports: [
       {
@@ -51,12 +63,20 @@ const FEED_CONFIG = {
         name: "KBC Sports Desk",
         url: "https://www.kbc.co.ke/category/sports/feed/",
       },
+      {
+        name: "Google Nairobi Sports",
+        url: "https://news.google.com/rss/search?q=Nairobi+(sports+OR+stadium+OR+marathon+OR+football)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     entertainment: [
       { name: "Ghafla Kenya Showbiz", url: "https://ghafla.co.ke/ke/feed" },
       {
         name: "KBC Entertainment",
         url: "https://www.kbc.co.ke/category/entertainment/feed/",
+      },
+      {
+        name: "Google Nairobi Culture",
+        url: "https://news.google.com/rss/search?q=Nairobi+(entertainment+OR+showbiz+OR+music+OR+events)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
   },
@@ -69,6 +89,14 @@ const FEED_CONFIG = {
       { name: "Kenya News Agency", url: "https://kenyanews.go.ke/feed/" },
       { name: "K24 Digital Kenya", url: "https://k24.digital/feed" },
       { name: "Nairobi Wire Breaking", url: "https://nairobiwire.com/feed" },
+      {
+        name: "Google Kenya Top Stories",
+        url: "https://news.google.com/rss/headlines/section/geo/Kenya?hl=en-KE&gl=KE&ceid=KE:en",
+      },
+      {
+        name: "Google Kenya Breaking",
+        url: "https://news.google.com/rss/search?q=Kenya+news+when:24h&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     politics: [
       {
@@ -78,6 +106,10 @@ const FEED_CONFIG = {
       {
         name: "K24 Politics Stream",
         url: "https://k24.digital/category/news/politics/feed",
+      },
+      {
+        name: "Google Kenya Politics",
+        url: "https://news.google.com/rss/search?q=Kenya+(politics+OR+parliament+OR+ruto+OR+government)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
     business: [
@@ -89,6 +121,10 @@ const FEED_CONFIG = {
         name: "K24 Business Core",
         url: "https://k24.digital/category/business/feed",
       },
+      {
+        name: "Google Kenya Business",
+        url: "https://news.google.com/rss/search?q=Kenya+(business+OR+shilling+OR+finance+OR+cbk+OR+taxes)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     sports: [
       {
@@ -99,12 +135,20 @@ const FEED_CONFIG = {
         name: "K24 Sports Desk",
         url: "https://k24.digital/category/sports/feed",
       },
+      {
+        name: "Google Kenya Sports",
+        url: "https://news.google.com/rss/search?q=Kenya+(sports+OR+athletics+OR+harambee+OR+safaricom+7s)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
+      },
     ],
     entertainment: [
       { name: "Ghafla Showbiz Kenya", url: "https://ghafla.co.ke/ke/feed" },
       {
         name: "KBC Lifestyle",
         url: "https://www.kbc.co.ke/category/entertainment/feed/",
+      },
+      {
+        name: "Google Kenya Showbiz",
+        url: "https://news.google.com/rss/search?q=Kenya+(entertainment+OR+celebrity+OR+music+OR+culture)+when:7d&hl=en-KE&gl=KE&ceid=KE:en",
       },
     ],
   },
