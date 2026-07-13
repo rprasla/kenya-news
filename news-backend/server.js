@@ -134,139 +134,67 @@ const FEED_CONFIG = {
   },
 };
 
+const RSSParser = require("rss-parser");
+const parser = new RSSParser();
+
 app.get("/api/news", async (req, res) => {
   const { category, topic } = req.query;
-  const activeCategory = category || "kenya";
-  const activeTopic = topic || "all";
 
-  const regionConfig = FEED_CONFIG[activeCategory];
-  if (!regionConfig)
-    return res.status(400).json({ error: "Invalid search metrics." });
+  // 1. Guard against unexpected query values
+  if (!FEED_CONFIG[category] || !FEED_CONFIG[category][topic]) {
+    return res
+      .status(400)
+      .json({ error: "Invalid routing query configuration values." });
+  }
 
-  const feeds =
-    regionConfig[activeTopic] && regionConfig[activeTopic].length > 0
-      ? regionConfig[activeTopic]
-      : regionConfig["all"];
+  const feedsToQuery = FEED_CONFIG[category][topic];
+  let accumulatedArticles = []; // Master structural tray
 
-  let combinedArticles = [];
-
-  for (const feed of feeds) {
+  // 2. Loop through every single feed parameter independently
+  for (const feed of feedsToQuery) {
     try {
-      const feedData = await parser.parseURL(feed.url);
-      if (feedData && feedData.items) {
-        const parsedItems = feedData.items.map((item) => {
-          const cleanTitle = item.title
-            ? item.title.split(" - ")[0]
-            : "Live Update";
+      // Fetch fresh raw data directly bypassing regional edge proxy memory sets
+      const parsedData = await parser.parseURL(
+        `${feed.url}?nocache=${Date.now()}`,
+      );
 
-          // 1. Create a rock-solid date fallback chain
-          let finalTimestamp = Date.now();
-
-          if (item.pubDate) {
-            const parsed = Date.parse(item.pubDate);
-            if (!isNaN(parsed)) finalTimestamp = parsed;
-          } else if (item.isoDate) {
-            const parsed = Date.parse(item.isoDate);
-            if (!isNaN(parsed)) finalTimestamp = parsed;
+      if (parsedData && parsedData.items) {
+        const structuralItems = parsedData.items.map((item, index) => {
+          // Force parse erratic date footprints safely into Unix integers
+          let numericTimestamp = Date.now();
+          const rawDate = item.pubDate || item.date || item.isoDate;
+          if (rawDate) {
+            const parsedTime = Date.parse(rawDate);
+            if (!isNaN(parsedTime)) numericTimestamp = parsedTime;
           }
 
           return {
-            id: item.link || item.guid || Math.random().toString(),
-            title: cleanTitle,
-            link: item.link || "#",
+            id: item.guid || item.id || `${feed.name}-${index}-${Date.now()}`,
+            title: item.title || "No Headline Provided",
+            link: item.link,
+            snippet: item.contentSnippet || item.summary || "",
             source: feed.name,
-            snippet: item.contentSnippet
-              ? item.contentSnippet.substring(0, 140) + "..."
-              : "",
-
-            // 2. We bind it to every possible naming scheme to prevent frontend mismatches:
-            timestamp: Number(finalTimestamp),
-            timeValue: Number(finalTimestamp),
-            rawDate: Number(finalTimestamp),
-
-            date:
-              new Date(finalTimestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }) +
-              " - " +
-              new Date(finalTimestamp).toLocaleDateString(),
+            date: item.pubDate || item.date || "Live Now",
+            timestamp: numericTimestamp, // Critical engine property
           };
         });
 
-        combinedArticles = [...combinedArticles, ...parsedItems];
+        // 🎯 THE LIFESAVING FIX: Stack items together dynamically rather than overwriting!
+        accumulatedArticles = [...accumulatedArticles, ...structuralItems];
       }
-    } catch (err) {
-      console.error(`Fetch error on ${feed.name}:`, err.message);
+    } catch (feedError) {
+      console.error(
+        `Bypassed down target endpoint offline [${feed.name}]:`,
+        feedError.message,
+      );
     }
   }
 
-  // --- SPAM & AGE HORIZON FILTER ---
-  const LOW_QUALITY_KEYWORDS = [
-    "sponsored",
-    "advertorial",
-    "casino",
-    "betting",
-    "promo",
-  ];
+  // 3. SECURE TIME SORT (Ensures all raw 2026 content is frozen right at the top)
+  accumulatedArticles.sort((a, b) => b.timestamp - a.timestamp);
 
-  // --- CLEAN OPEN-GATE PROCESSING ---
-  const LOW_QUALITY_KEYWORDS = [
-    "sponsored",
-    "advertorial",
-    "casino",
-    "betting",
-    "promo",
-  ];
-
-  // --- ROBUST UNIFIED PARSING & SORTING ---
-  combinedArticles = combinedArticles.map((article) => {
-    // Forcefully normalize all erratic incoming RSS date formats into real Unix milliseconds
-    let standardTimestamp = Date.now(); // fallback to now if broken
-
-    if (article.pubDate || article.date || article.isoDate) {
-      const rawDateString = article.pubDate || article.date || article.isoDate;
-      const parsedTime = Date.parse(rawDateString);
-
-      // If JavaScript successfully converts the date string to a number, use it
-      if (!isNaN(parsedTime)) {
-        standardTimestamp = parsedTime;
-      }
-    }
-
-    // Return the polished item with a clean numeric timestamp property
-    return {
-      ...article,
-      timestamp: standardTimestamp,
-    };
-  });
-
-  // --- GENERAL FRAGMENT FILTER ---
-  combinedArticles = combinedArticles.filter((article) => {
-    if (!article || !article.title) return false;
-
-    // Drop spam and empty link fragments
-    const lowQualityTerms = [
-      "sponsored",
-      "advertorial",
-      "casino",
-      "betting",
-      "promo",
-    ];
-    const contentText = `${article.title.toLowerCase()} ${article.snippet.toLowerCase()}`;
-    const isSpam = lowQualityTerms.some((term) => contentText.includes(term));
-
-    return !isSpam && article.title.split(" ").length >= 3;
-  });
-
-  // --- CRITICAL STICKY SORT (Strictly Newest to Oldest) ---
-  // Subtracting clean integers guarantees the latest updates freeze to index 0
-  // combinedArticles.sort((a, b) => b.timestamp - a.timestamp);
-
-  // Return a generous slice of 50 stories so your feed is always full
-  const finalCleanPayload = combinedArticles.slice(0, 50);
-
-  res.json(finalCleanPayload);
+  // 4. Return a highly generous slice to your frontend
+  res.json(accumulatedArticles.slice(0, 60));
 });
 
 const PORT = process.env.PORT || 5000;
