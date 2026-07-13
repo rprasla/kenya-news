@@ -152,13 +152,15 @@ const FEED_CONFIG = {
       },
     ],
   },
-
-  // Keep your tanzania and uganda objects exactly as they are below...
   tanzania: {
     all: [
       {
         name: "The Citizen TZ Live",
         url: "https://www.thecitizen.co.tz/service/search/feed/ct/2304482/feed.rss",
+      },
+      {
+        name: "Google Tanzania Live",
+        url: "https://news.google.com/rss/search?q=Tanzania+when:3d&hl=en-US&gl=TZ&ceid=TZ:en",
       },
     ],
     politics: [
@@ -171,6 +173,10 @@ const FEED_CONFIG = {
       {
         name: "The Citizen Biz",
         url: "https://www.thecitizen.co.tz/service/search/feed/ct/2304562/feed.rss",
+      },
+      {
+        name: "Google Business TZ",
+        url: "https://news.google.com/rss/search?q=tanzania+(business+OR+economy+OR+shilling)&hl=en-US&gl=TZ&ceid=TZ:en",
       },
     ],
     sports: [
@@ -192,11 +198,19 @@ const FEED_CONFIG = {
         name: "Daily Monitor UG Live",
         url: "https://www.monitor.co.ug/service/search/feed/dm/688322/feed.rss",
       },
+      {
+        name: "Google Uganda Live",
+        url: "https://news.google.com/rss/search?q=Uganda+when:3d&hl=en-US&gl=UG&ceid=UG:en",
+      },
     ],
     politics: [
       {
         name: "Daily Monitor Politics",
         url: "https://www.monitor.co.ug/service/search/feed/dm/688326/feed.rss",
+      },
+      {
+        name: "Google Politics UG",
+        url: "https://news.google.com/rss/search?q=uganda+(politics+OR+parliament)&hl=en-US&gl=UG&ceid=UG:en",
       },
     ],
     business: [
@@ -204,11 +218,19 @@ const FEED_CONFIG = {
         name: "Daily Monitor Biz",
         url: "https://www.monitor.co.ug/service/search/feed/dm/688330/feed.rss",
       },
+      {
+        name: "Google Business UG",
+        url: "https://news.google.com/rss/search?q=uganda+(business+OR+economy+OR+shilling)&hl=en-US&gl=UG&ceid=UG:en",
+      },
     ],
     sports: [
       {
         name: "Daily Monitor Sports",
         url: "https://www.monitor.co.ug/service/search/feed/dm/688338/feed.rss",
+      },
+      {
+        name: "Google Sports UG",
+        url: "https://news.google.com/rss/search?q=uganda+sports&hl=en-US&gl=UG&ceid=UG:en",
       },
     ],
     entertainment: [
