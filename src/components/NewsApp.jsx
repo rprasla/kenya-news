@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const BACKEND_URL =
-  process.env.REACT_APP_BACKEND_URL || "https://kenya-news.onrender.com";
+  import.meta.env.VITE_BACKEND_URL || "https://kenya-news.onrender.com";
 
 const REGIONS = ["nairobi", "kenya", "tanzania", "uganda"];
 const TOPICS = [
